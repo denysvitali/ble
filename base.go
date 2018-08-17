@@ -204,6 +204,30 @@ func (conn *Connection) findObject(iface string, matching predicate) (*blob, err
 	}
 }
 
+// findObject finds an object satisfying the given predicate.
+// If returns an error if zero or more than one is found.
+func (conn *Connection) findObjects(iface string, matching predicate) ([]*blob, error) {
+	var found []*blob
+	conn.iterObjects(func(path dbus.ObjectPath, dict Object) bool {
+		props := dict[iface]
+		if props == nil {
+			return false
+		}
+		obj := &blob{
+			conn:       conn,
+			path:       path,
+			iface:      iface,
+			properties: props,
+			object:     conn.bus.Object("org.bluez", path),
+		}
+		if matching(obj) {
+			found = append(found, obj)
+		}
+		return false
+	})
+	return found, nil
+}
+
 func dot(a, b string) string {
 	return a + "." + b
 }

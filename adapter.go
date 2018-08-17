@@ -37,7 +37,22 @@ type Adapter interface {
 
 // GetAdapter finds an Adapter in the object cache and returns it.
 func (conn *Connection) GetAdapter() (Adapter, error) {
-	return conn.findObject(adapterInterface, func(_ *blob) bool { return true })
+	// Get Default Adapter
+	adapters, err := conn.GetAdapters()
+	if err != nil {
+		return nil, err
+	}
+
+	return adapters[0], nil
+}
+
+func (conn *Connection) GetAdapters() ([]Adapter, error) {
+	adapters, err := conn.findObjects(adapterInterface, func(_ *blob) bool { return true })
+	var r_adapters = []Adapter{}
+	for _, adapter := range(adapters) {
+		r_adapters = append(r_adapters, adapter)
+	}
+	return r_adapters, err
 }
 
 func (adapter *blob) StartDiscovery() error {

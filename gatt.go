@@ -1,5 +1,7 @@
 package ble
 
+import "github.com/godbus/dbus"
+
 const (
 	// GATTMTU is the maximum size of a write to a GATT characteristic.
 	GATTMTU = 20
@@ -31,6 +33,21 @@ func (handle *blob) UUID() string {
 // See bluez/doc/gatt-api.txt
 type Service interface {
 	GattHandle
+	Primary() bool
+	Device() dbus.ObjectPath
+	Includes() []dbus.ObjectPath
+}
+
+func (handle *blob) Primary() bool {
+	return handle.properties["Primary"].Value().(bool)
+}
+
+func (handle *blob) Device() dbus.ObjectPath {
+	return handle.properties["Device"].Value().(dbus.ObjectPath)
+}
+
+func (handle *blob) Includes() []dbus.ObjectPath {
+	return handle.properties["Includes"].Value().([]dbus.ObjectPath)
 }
 
 // GetService finds a Service with the given UUID.

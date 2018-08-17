@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/ecc1/ble"
+	"github.com/denysvitali/ble"
 )
 
 func main() {
@@ -12,9 +12,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	adapter, err := conn.GetAdapter()
-	if err != nil {
-		log.Fatal(err)
+	adapters, err := conn.GetAdapters("aaa")
+
+	for _, adapter := range(adapters) {
+		if err != nil {
+			log.Fatal(err)
+		}
+		adapter.Print(os.Stdout)
 	}
-	adapter.Print(os.Stdout)
 }

@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/ecc1/ble"
+	"github.com/denysvitali/ble"
 )
 
 func main() {
